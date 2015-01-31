@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmi:id="_KfUsMJZJEeS32e8Ntdh4cg" elementId="org.eclipse.e4.ide.application" bindingContexts="_KfUsOZZJEeS32e8Ntdh4cg">
-  <children xsi:type="basic:TrimmedWindow" xmi:id="_KfUsMZZJEeS32e8Ntdh4cg" elementId="com.zizibujuan.niubizi.client.main" label="" x="0" y="200" width="100" height="100"/>
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_KfUsMZZJEeS32e8Ntdh4cg" elementId="com.zizibujuan.niubizi.client.main" label="" x="0" y="200" width="100" height="100">
+    <children xsi:type="basic:Part" xmi:id="_7MZ2oKkeEeSOnoqT3vCy_Q" elementId="com.zizibujuan.niubizi.client.ui.part.container" contributionURI="bundleclass://com.zizibujuan.niubizi.client.ui/com.zizibujuan.niubizi.client.ui.ReceiverPart" label="container"/>
+  </children>
   <rootContext xmi:id="_KfUsOZZJEeS32e8Ntdh4cg" elementId="org.eclipse.ui.contexts.dialogAndWindow" name="In Dialog and Windows">
     <children xmi:id="_KfUsOpZJEeS32e8Ntdh4cg" elementId="org.eclipse.ui.contexts.window" name="In Windows"/>
     <children xmi:id="_KfUsO5ZJEeS32e8Ntdh4cg" elementId="org.eclipse.ui.contexts.dialog" name="In Dialogs"/>
