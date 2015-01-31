@@ -11,6 +11,14 @@
                name="applicationCSS"
                value="platform:/plugin/com.zizibujuan.niubizi.client.ui/css/default.css">
          </property>
+         <property
+               name="appName"
+               value="com.zizibujuan.niubizi.client.ui">
+         </property>
+         <property
+               name="lifeCycleURI"
+               value="bundleClass://com.zizibujuan.niubizi.client.ui/com.zizibujuan.niubizi.client.ui.LifeCycleManager">
+         </property>
       </product>
    </extension>
 
