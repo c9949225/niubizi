@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="com.zizibujuan.niubizi.server.service.impl.fileServiceImpl">
+   <implementation class="com.zizibujuan.niubizi.server.service.impl.FileServiceImpl"/>
+   <reference 
+   		bind="setFileDao" 
+   		unbind="unsetFileDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.niubizi.server.dao.FileDao" 
+   		name="fileDao" 
+   		policy="dynamic"/>
+	<service>
+		<provide interface="com.zizibujuan.niubizi.server.service.FileService"/>
+	</service>
+</scr:component>

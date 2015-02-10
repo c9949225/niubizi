@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: niubizi.server.dao.jpa
+Bundle-SymbolicName: com.zizibujuan.niubizi.server.dao.jpa
+Bundle-Version: 0.0.1.qualifier
+Bundle-Activator: com.zizibujuan.niubizi.server.dao.jpa.Activator
+Bundle-Vendor: zizibujuan.com
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.zizibujuan.niubizi.server.dao,
+ com.zizibujuan.niubizi.server.model,
+ javax.persistence;version="2.1.0",
+ org.osgi.framework;version="1.3.0"
+Service-Component: OSGI-INF/*.xml

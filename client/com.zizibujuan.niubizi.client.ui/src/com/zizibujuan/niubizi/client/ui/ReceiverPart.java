@@ -16,7 +16,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
+import com.zizibujuan.niubizi.client.ui.dao.DBManager;
+
 public class ReceiverPart {
+	
+	private FileImportWindow childWindow;
 
 	@PostConstruct
 	public void createControls(Composite parent){
@@ -37,7 +41,18 @@ public class ReceiverPart {
                     fileList = (String[]) event.data;
                 }
                 System.out.println(Arrays.toString(fileList));
+                
+                // 有文件拖拽进来时，弹出一个窗口
+                // 单例
+        		if(childWindow == null){
+        			childWindow = new FileImportWindow();
+        			
+        		}
+                childWindow.show(fileList);
 			}
 		});
+		
+		
+		DBManager d = new DBManager();
 	}
 }

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: niubizi.server.service
+Bundle-SymbolicName: com.zizibujuan.niubizi.server.service
+Bundle-Version: 0.0.1.qualifier
+Bundle-Activator: com.zizibujuan.niubizi.server.service.Activator
+Bundle-Vendor: zizibujuan.com
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.zizibujuan.niubizi.server.model,
+ org.osgi.framework;version="1.3.0"
+Export-Package: com.zizibujuan.niubizi.server.service
