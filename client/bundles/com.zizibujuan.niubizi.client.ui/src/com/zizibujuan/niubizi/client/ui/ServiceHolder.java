@@ -1,6 +1,7 @@
 package com.zizibujuan.niubizi.client.ui;
 
 import com.zizibujuan.niubizi.server.service.FileService;
+import com.zizibujuan.niubizi.server.service.TagService;
 
 public class ServiceHolder {
 	private static ServiceHolder singleton;
@@ -30,5 +31,20 @@ public class ServiceHolder {
 	}
 	public FileService getFileService() {
 		return fileService;
+	}
+	
+	private TagService tagService;
+	public void unsetTagService(TagService tagService) {
+		//logger.info("注销tagService");
+		if (this.tagService == tagService) {
+			this.tagService = null;
+		}
+	}
+	public void setTagService(TagService tagService) {
+		//logger.info("注入tagService");
+		this.tagService = tagService;
+	}
+	public TagService getTagService() {
+		return tagService;
 	}
 }

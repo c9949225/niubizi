@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="com.zizibujuan.niubizi.server.service.impl.tagServiceImpl">
+   <implementation class="com.zizibujuan.niubizi.server.service.impl.TagServiceImpl"/>
+   <reference 
+   		bind="setTagDao" 
+   		unbind="unsetTagDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.niubizi.server.dao.TagDao" 
+   		name="tagDao" 
+   		policy="dynamic"/>
+	<service>
+		<provide interface="com.zizibujuan.niubizi.server.service.TagService"/>
+	</service>
+</scr:component>

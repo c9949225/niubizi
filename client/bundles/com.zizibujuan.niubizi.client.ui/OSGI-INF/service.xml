@@ -13,5 +13,13 @@
    		interface="com.zizibujuan.niubizi.server.service.FileService" 
    		name="fileService" 
    		policy="dynamic" />
-   		
+
+   <reference 
+   		bind="setTagService" 
+   		unbind="unsetTagService" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.niubizi.server.service.TagService" 
+   		name="tagService" 
+   		policy="dynamic" />
+   			
 </scr:component>

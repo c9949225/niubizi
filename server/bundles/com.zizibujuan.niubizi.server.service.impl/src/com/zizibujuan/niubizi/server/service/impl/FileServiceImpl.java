@@ -15,7 +15,7 @@ public class FileServiceImpl implements FileService{
 	
 	public void unsetFileDao(FileDao fileDao){
 		if(this.fileDao == fileDao){
-			//logger.info("注销controlDao");
+			//logger.info("注销fileDao");
 			this.fileDao = null;
 		}
 	}

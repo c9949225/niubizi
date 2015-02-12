@@ -10,6 +10,7 @@ Meta-Persistence: META-INF/persistence.xml
 Import-Package: javax.persistence;version="2.1.0",
  javax.persistence.criteria;version="2.1.0",
  javax.persistence.metamodel;version="2.1.0",
+ org.apache.derby.jdbc,
  org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1"
 Export-Package: com.zizibujuan.niubizi.server.model

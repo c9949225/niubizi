@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@Deprecated
 public class DBManager {
 	private static Connection con = null ;	
 
