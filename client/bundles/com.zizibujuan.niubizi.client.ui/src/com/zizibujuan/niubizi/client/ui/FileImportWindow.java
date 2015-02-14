@@ -134,6 +134,7 @@ public class FileImportWindow {
 		lblFileType.setText(fileType);
 		String fileName = FilenameUtils.getBaseName(filePath);
 		txtFileName.setText(fileName);
+		txtFileName.setSelection(fileName.length(), fileName.length());
 		
 		// 存储文件路径，文件名，保存时间
 		FileService fileService = ServiceHolder.getDefault().getFileService();
