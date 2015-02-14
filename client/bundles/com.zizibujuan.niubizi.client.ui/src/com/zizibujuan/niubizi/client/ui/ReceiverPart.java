@@ -112,10 +112,7 @@ public class ReceiverPart {
                 
                 // 有文件拖拽进来时，弹出一个窗口
                 // 单例
-        		if(childWindow == null){
-        			childWindow = new FileImportWindow();
-        			
-        		}
+    			childWindow = new FileImportWindow();
                 childWindow.show(fileList);
 			}
 		});

@@ -1,24 +1,17 @@
 package com.zizibujuan.niubizi.client.ui;
 
-
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.events.IEventBroker;
-import org.eclipse.e4.ui.internal.workbench.swt.ResourceUtility;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
@@ -67,21 +60,19 @@ public class LifeCycleManager {
 			this.context = context;
 		}
 
-		 int[] circle(int r, int offsetX, int offsetY) {
-		    int[] polygon = new int[8 * r + 4];
-		    // x^2 + y^2 = r^2
-		    for (int i = 0; i < 2 * r + 1; i++) {
-		      int x = i - r;
-		      int y = (int) Math.sqrt(r * r - x * x);
-		      polygon[2 * i] = offsetX + x;
-		      polygon[2 * i + 1] = offsetY + y;
-		      polygon[8 * r - 2 * i - 2] = offsetX + x;
-		      polygon[8 * r - 2 * i - 1] = offsetY - y;
-		    }
-		    return polygon;
-		 }
-		 
-		 
+		int[] circle(int r, int offsetX, int offsetY) {
+			int[] polygon = new int[8 * r + 4];
+			// x^2 + y^2 = r^2
+			for (int i = 0; i < 2 * r + 1; i++) {
+				int x = i - r;
+				int y = (int) Math.sqrt(r * r - x * x);
+				polygon[2 * i] = offsetX + x;
+				polygon[2 * i + 1] = offsetY + y;
+				polygon[8 * r - 2 * i - 2] = offsetX + x;
+				polygon[8 * r - 2 * i - 1] = offsetY - y;
+			}
+			return polygon;
+		}
 				
 		@Override
 		public void handleEvent(Event event) {
@@ -90,18 +81,16 @@ public class LifeCycleManager {
 			System.out.println(shell);
 			
 			// 窗口始终在最前面，即一直对用户可见
-						final long hWnd = shell.handle;
-						OS.SetWindowPos(hWnd, OS.HWND_TOPMOST, 0, 100, 80, 80, SWT.NULL);
-						//OS.SetWindowLong(hWnd, OS.GWL_EXSTYLE, OS.WS_EX_CAPTIONOKBTN);
-						OS.SetWindowLong(hWnd,OS.GWL_EXSTYLE,OS.WS_EX_TOOLWINDOW);
+			final long hWnd = shell.handle;
+			OS.SetWindowPos(hWnd, OS.HWND_TOPMOST, 0, 100, 80, 80, SWT.NULL);
+			//OS.SetWindowLong(hWnd, OS.GWL_EXSTYLE, OS.WS_EX_CAPTIONOKBTN);
+			//OS.SetWindowLong(hWnd,OS.GWL_EXSTYLE,OS.WS_EX_TOOLWINDOW);
 			
 			Display display = shell.getDisplay();
 			
 			ImageData imgBackData = new ImageData(getClass().getResourceAsStream("/icons/iconfont-tongzhi.png"));
 			Image imgBack = new Image(display, imgBackData);
 			shell.setBackgroundImage(imgBack);
-			
-			
 			
 			region = new Region();
 			region.add(circle(35, 40, 40));

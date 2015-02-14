@@ -21,7 +21,6 @@ public class ShellMoveListenter implements Listener {
 		case SWT.MouseDown:
 			tracePoint.x = event.x;
 			tracePoint.y = event.y;
-			System.out.println(tracePoint);
 			break;
 		case SWT.MouseMove:
 			if (tracePoint.x == -1) {
@@ -29,12 +28,10 @@ public class ShellMoveListenter implements Listener {
 			}
 			Point point = shell.toDisplay(event.x, event.y);
 			shell.setLocation(point.x - tracePoint.x, point.y - tracePoint.y);
-			System.out.println(tracePoint);
 			break;
 		case SWT.MouseUp:
 			tracePoint.x = -1;
 			tracePoint.y = -1;
-			System.out.println(tracePoint);
 			break;
 
 		default:

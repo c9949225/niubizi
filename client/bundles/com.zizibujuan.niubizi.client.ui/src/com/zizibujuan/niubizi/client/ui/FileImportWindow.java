@@ -41,13 +41,13 @@ public class FileImportWindow {
 	
 	
 	public FileImportWindow(){
-		window = new Shell(SWT.NULL);
+		window = new Shell(SWT.CLOSE);
 		window.setSize(300, 600);
         // TODO: 计算相对位置
 		int x = 150;
 		int y = 100;
 		window.setLocation(x, y);
-		
+	        
 		createWindowContent();
 	}
 	
@@ -121,6 +121,7 @@ public class FileImportWindow {
 	}
 	
 	public void show(String... filePathArray){
+		
 		if(!window.isVisible()){
 			window.open();
 		}
