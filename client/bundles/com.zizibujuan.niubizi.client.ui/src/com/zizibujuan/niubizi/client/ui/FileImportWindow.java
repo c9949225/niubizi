@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -18,6 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.zizibujuan.niubizi.client.ui.events.TagChangedListener;
 import com.zizibujuan.niubizi.server.model.FileInfo;
 import com.zizibujuan.niubizi.server.model.TagInfo;
 import com.zizibujuan.niubizi.server.service.FileService;
@@ -39,9 +42,11 @@ public class FileImportWindow {
 	private Label lblFileType;
 	private Text txtFileName;
 	
+	private Composite tagContainer;
+	
 	
 	public FileImportWindow(){
-		window = new Shell(SWT.CLOSE);
+		window = new Shell(SWT.CLOSE | SWT.ON_TOP);
 		window.setSize(300, 600);
         // TODO: 计算相对位置
 		int x = 150;
@@ -58,6 +63,37 @@ public class FileImportWindow {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		window.setLayout(layout);
+		
+		// 操作图标， 设置标签
+		Button btnTags = new Button(window, SWT.PUSH);
+		ImageData imgTagsData = new ImageData(getClass().getResourceAsStream("/icons/iconfont-tags2.png"));
+		Image imgTags = new Image(window.getDisplay(), imgTagsData);
+		btnTags.setImage(imgTags);
+		btnTags.setText("设置标签");
+		btnTags.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TagsSettingWindow settingWindow = new TagsSettingWindow();
+				// 同步标签
+				settingWindow.addTagChangedListener(new TagChangedListener() {
+					@Override
+					public void tagChanged() {
+						if(tagContainer != null){
+							refreshTagList(tagContainer);
+						}
+					}
+				});
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
 		// 文档后缀名
 		GridData gdFileType = new GridData(GridData.FILL_HORIZONTAL);
 		lblFileType = new Label(window, SWT.NULL);
@@ -68,41 +104,9 @@ public class FileImportWindow {
 		txtFileName.setLayoutData(gd);
 		
 		// 显示tag标签
-		Composite container = new Composite(window, SWT.FILL);
-		container.setLayout(new RowLayout(SWT.VERTICAL));
-		refreshTagList(container);
-		
-		Composite tagAddContainer = new Composite(window, SWT.FILL);
-		tagAddContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
-		Text txtTagName = new Text(tagAddContainer, SWT.BORDER);
-		Button btnAddTag = new Button(tagAddContainer, SWT.PUSH);
-		btnAddTag.setText("新增标签");
-		btnAddTag.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				String tagName = txtTagName.getText().trim();
-				if(StringUtils.isEmpty(tagName)){
-					// TODO： 提示必填
-				}else{
-					TagInfo tagInfo = new TagInfo();
-					tagInfo.setName(tagName);
-					tagInfo.setCreateTime(new Date()); // TODO:如何设置默认值
-					TagService tagService = ServiceHolder.getDefault().getTagService();
-					tagService.add(tagInfo);
-					
-					// TODO： 改成刷新标签列表
-					refreshTagList(container);
-				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
+		tagContainer = new Composite(window, SWT.FILL);
+		tagContainer.setLayout(new RowLayout(SWT.VERTICAL));
+		refreshTagList(tagContainer);		
 	}
 
 	private void refreshTagList(Composite container) {
@@ -130,8 +134,8 @@ public class FileImportWindow {
 			return;
 		}
 		filePath = filePathArray[0];
-		String fileType = FilenameUtils.getExtension(filePath);
-		lblFileType.setText(fileType);
+		//String fileType = FilenameUtils.getExtension(filePath);
+		lblFileType.setText(FilenameUtils.getName(filePath));
 		String fileName = FilenameUtils.getBaseName(filePath);
 		txtFileName.setText(fileName);
 		txtFileName.setSelection(fileName.length(), fileName.length());

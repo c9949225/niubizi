@@ -75,7 +75,7 @@ public class ReceiverPart {
 		
 		Point tracePoint = new Point(-1, -1);
 		
-		Listener listener = new ShellMoveListenter(lblText.getShell(), tracePoint);
+		Listener listener = new ShellMoveListener(lblText.getShell(), tracePoint);
 		lblText.addListener(SWT.MouseMove, listener);
 		lblText.addListener(SWT.MouseDown, listener);
 		lblText.addListener(SWT.MouseUp, listener);

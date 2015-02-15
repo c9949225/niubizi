@@ -8,4 +8,6 @@ public interface TagDao {
 
 	int add(TagInfo tagInfo);
 	List<TagInfo> get();
+	void remove(int id);
+	TagInfo findByName(String tagName);
 }

@@ -32,4 +32,14 @@ public class TagServiceImpl implements TagService{
 		return tagDao.get();
 	}
 
+	@Override
+	public void remove(int id) {
+		tagDao.remove(id);
+	}
+
+	@Override
+	public TagInfo findByName(String tagName) {
+		return tagDao.findByName(tagName);
+	}
+
 }

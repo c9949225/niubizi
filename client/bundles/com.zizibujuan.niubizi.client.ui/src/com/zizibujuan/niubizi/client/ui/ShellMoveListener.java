@@ -6,11 +6,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-public class ShellMoveListenter implements Listener {
+public class ShellMoveListener implements Listener {
 	private Shell shell;
 	private Point tracePoint;
 
-	public ShellMoveListenter(Shell shell, Point tracePoint) {
+	public ShellMoveListener(Shell shell, Point tracePoint) {
 		this.shell = shell;
 		this.tracePoint = tracePoint;
 	}
@@ -38,6 +38,5 @@ public class ShellMoveListenter implements Listener {
 			break;
 
 		}
-
 	}
 }

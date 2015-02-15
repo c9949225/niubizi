@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 /**
  * 文件标签，用来标识文件
@@ -18,7 +19,7 @@ import javax.persistence.TemporalType;
  * @since 0.0.1
  */
 @Entity
-@Table(name="NBZ_TAG")
+@Table(name="NBZ_TAG", uniqueConstraints=@UniqueConstraint(columnNames = { "TAG_NAME" }))
 public class TagInfo {
 
 	@Id

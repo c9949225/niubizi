@@ -7,4 +7,6 @@ import com.zizibujuan.niubizi.server.model.TagInfo;
 public interface TagService {
 	int add(TagInfo tagInfo);
 	List<TagInfo> get();
+	void remove(int id);
+	TagInfo findByName(String tagName);
 }
