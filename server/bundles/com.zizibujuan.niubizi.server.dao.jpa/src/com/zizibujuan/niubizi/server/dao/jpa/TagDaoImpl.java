@@ -8,6 +8,12 @@ import com.zizibujuan.niubizi.server.dao.TagDao;
 import com.zizibujuan.niubizi.server.model.EntityManagerFactoryService;
 import com.zizibujuan.niubizi.server.model.TagInfo;
 
+/**
+ * TODO: 标签个数是否需要限制呢？
+ * 
+ * @author jinzw
+ * @since 0.0.1
+ */
 public class TagDaoImpl implements TagDao{
 
 	@Override

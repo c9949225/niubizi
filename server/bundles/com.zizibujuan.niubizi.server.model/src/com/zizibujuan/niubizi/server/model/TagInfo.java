@@ -33,6 +33,9 @@ public class TagInfo {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_TIME")
 	private Date createTime; // 创建时间
+	
+	@Column(name="FILE_COUNT")
+	private int fileCount = 0; // 使用标签的文件个数
 
 	public int getId() {
 		return id;
@@ -57,4 +60,23 @@ public class TagInfo {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+
+	public int getFileCount() {
+		return fileCount;
+	}
+
+	public void setFileCount(int fileCount) {
+		this.fileCount = fileCount;
+	}
+
+	public void decreaseFileCount() {
+		if(fileCount > 0){
+			fileCount--;
+		}
+	}
+
+	public void increaseFileCount() {
+		fileCount++;
+	}
+	
 }

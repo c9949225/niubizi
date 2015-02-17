@@ -9,6 +9,7 @@
 
         <class>com.zizibujuan.niubizi.server.model.FileInfo</class>
         <class>com.zizibujuan.niubizi.server.model.TagInfo</class>
+        <class>com.zizibujuan.niubizi.server.model.FileTag</class>
 <!-- 
         <class>model.account.Customer</class>
         <class>model.account.Transaction</class>
@@ -35,7 +36,7 @@
             <property name="eclipselink.jdbc.read-connections.min" value="1"/>
             <property name="eclipselink.jdbc.write-connections.min" value="1"/>
             <!-- drop-and-create-tables -->                    
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
             <property name="eclipselink.weaving" value="true"/>
 
         </properties>

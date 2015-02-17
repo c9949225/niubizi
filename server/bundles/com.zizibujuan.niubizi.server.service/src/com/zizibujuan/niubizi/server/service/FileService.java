@@ -1,6 +1,7 @@
 package com.zizibujuan.niubizi.server.service;
 
 import com.zizibujuan.niubizi.server.model.FileInfo;
+import com.zizibujuan.niubizi.server.model.FileTag;
 
 public interface FileService {
 	
@@ -13,4 +14,8 @@ public interface FileService {
 	 * @return 返回文件标识
 	 */
 	int add(FileInfo fileInfo);
+
+	void removeTag(FileTag ft);
+
+	void addTag(FileTag ft);
 }

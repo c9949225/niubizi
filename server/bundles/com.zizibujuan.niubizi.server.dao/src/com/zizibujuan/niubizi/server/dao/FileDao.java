@@ -1,6 +1,7 @@
 package com.zizibujuan.niubizi.server.dao;
 
 import com.zizibujuan.niubizi.server.model.FileInfo;
+import com.zizibujuan.niubizi.server.model.FileTag;
 
 public interface FileDao {
 
@@ -13,4 +14,8 @@ public interface FileDao {
 	 * @return 返回文件标识
 	 */
 	int add(FileInfo fileInfo);
+
+	void removeTag(FileTag fileTag);
+
+	void addTag(FileTag fileTag);
 }

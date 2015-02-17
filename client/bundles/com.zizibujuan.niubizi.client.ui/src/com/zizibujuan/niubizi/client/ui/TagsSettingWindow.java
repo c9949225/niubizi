@@ -111,8 +111,8 @@ public class TagsSettingWindow {
 				item.setText(0, tagInfo.getName());
 				item.setData(tagInfo);
 				
-				// TODO: 关联的文件数
-				item.setText(1, "未获取");
+				// TODO: 标注的文件数加粗显示
+				item.setText(1, "已标注 " + tagInfo.getFileCount() + " 个文件");
 				
 				// 删除按钮
 				TableEditor teDelete = new TableEditor(tblTags);

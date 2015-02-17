@@ -1,17 +1,25 @@
 package com.zizibujuan.niubizi.client.ui;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -19,9 +27,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.service.prefs.Preferences;
 
 import com.zizibujuan.niubizi.client.ui.events.TagChangedListener;
 import com.zizibujuan.niubizi.server.model.FileInfo;
+import com.zizibujuan.niubizi.server.model.FileTag;
 import com.zizibujuan.niubizi.server.model.TagInfo;
 import com.zizibujuan.niubizi.server.service.FileService;
 import com.zizibujuan.niubizi.server.service.TagService;
@@ -34,16 +44,70 @@ import com.zizibujuan.niubizi.server.service.TagService;
  */
 public class FileImportWindow {
 	
+	private final class ToggleTagListener implements MouseListener {
+		@Override
+		public void mouseUp(MouseEvent e) {
+			System.out.println(e);
+			Label lbl = (Label)e.getSource();
+			Composite c = lbl.getParent();
+			Boolean selected = false;
+			Object o = c.getData("selected");
+			if(o != null){
+				selected = Boolean.valueOf(o.toString());
+			}
+
+			Control[] children = c.getChildren();
+			Label lblDuihao = (Label) children[0];
+			Label lblRemove = (Label)children[2];
+			
+			FileTag ft = new FileTag();
+			ft.setFileId(fileId);
+			TagInfo tag = (TagInfo) c.getData("tagInfo");
+			ft.setTagId(tag.getId());
+			
+			if(selected){
+				lblDuihao.setImage(null);
+				lblRemove.setImage(null);
+				fileService.removeTag(ft);
+			}else{
+				ImageData imgDuihaoData = new ImageData(getClass().getResourceAsStream("/icons/iconfont-duihao.png"));
+				lblDuihao.setImage(new Image(window.getDisplay(), imgDuihaoData));
+				
+				ImageData imgRemoveData = new ImageData(getClass().getResourceAsStream("/icons/iconfont-shanchu.png"));
+				lblRemove.setImage(new Image(window.getDisplay(), imgRemoveData));
+				
+				fileService.addTag(ft);
+			}
+			c.setData("selected", !selected);
+			
+		}
+
+		@Override
+		public void mouseDown(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseDoubleClick(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+
 	private Shell window;
 	
 	// 文件完整路径
 	private String filePath;
+	private int fileId;
 	
 	private Label lblFileType;
 	private Text txtFileName;
 	
 	private Composite tagContainer;
 	
+	private FileService fileService = ServiceHolder.getDefault().getFileService();
+	private TagService tagService = ServiceHolder.getDefault().getTagService();
 	
 	public FileImportWindow(){
 		window = new Shell(SWT.CLOSE | SWT.ON_TOP);
@@ -105,8 +169,10 @@ public class FileImportWindow {
 		
 		// 显示tag标签
 		tagContainer = new Composite(window, SWT.FILL);
-		tagContainer.setLayout(new RowLayout(SWT.VERTICAL));
-		refreshTagList(tagContainer);		
+		RowLayout rwTagContainer = new RowLayout(SWT.VERTICAL);
+		tagContainer.setLayout(rwTagContainer);
+		
+		refreshTagList(tagContainer);
 	}
 
 	private void refreshTagList(Composite container) {
@@ -115,11 +181,34 @@ public class FileImportWindow {
 			c.dispose();
 		}
 		
-		java.util.List<TagInfo> tags = ServiceHolder.getDefault().getTagService().get();
+		java.util.List<TagInfo> tags = tagService.get();
 		for(TagInfo tag : tags){
-			Button btn1 = new Button(container, SWT.TOGGLE);
-			btn1.setText(tag.getName());
-			btn1.setData(tag);
+			Composite cpTagContainer = new Composite(container, SWT.BORDER);
+			RowData rd = new RowData(200, 20);
+			cpTagContainer.setLayoutData(rd);
+			cpTagContainer.setData("tagInfo", tag);
+			cpTagContainer.setLayout(new RowLayout());
+			
+			Label lblSelected = new Label(cpTagContainer, SWT.NULL);
+			RowData rdSelected = new RowData(16, 16);
+			lblSelected.setLayoutData(rdSelected);
+			lblSelected.setCursor(new Cursor(window.getDisplay(), SWT.CURSOR_HAND));
+			
+			Label lblTagName = new Label(cpTagContainer, SWT.NULL);
+			lblTagName.setText(tag.getName());
+			RowData rdTagName = new RowData(150, 16);
+			lblTagName.setLayoutData(rdTagName);
+			lblTagName.setCursor(new Cursor(window.getDisplay(), SWT.CURSOR_HAND));
+			
+			Label lblDelete = new Label(cpTagContainer, SWT.NULL);
+			lblDelete.setSize(16, 16);
+			RowData rdDelete = new RowData(16, 16);
+			lblDelete.setLayoutData(rdDelete);
+			lblDelete.setCursor(new Cursor(window.getDisplay(), SWT.CURSOR_HAND));
+			
+			lblSelected.addMouseListener(new ToggleTagListener());
+			lblTagName.addMouseListener(new ToggleTagListener());
+			lblDelete.addMouseListener(new ToggleTagListener());
 		}
 		container.pack();
 	}
@@ -141,13 +230,43 @@ public class FileImportWindow {
 		txtFileName.setSelection(fileName.length(), fileName.length());
 		
 		// 存储文件路径，文件名，保存时间
-		FileService fileService = ServiceHolder.getDefault().getFileService();
+		
+		// 怎么判断文件已存在？先通过文件路径判断
+		// 如果文件已存在，则加载出已存在文件的信息
+		// 如果文件没有存在，则新增文件
 		FileInfo fileInfo = new FileInfo();
-		fileInfo.setPathName(filePath);
+		fileInfo.setFilePath(filePath);
+		fileInfo.setFileName(fileName);
 		fileInfo.setCreateTime(new Date());
-		fileService.add(fileInfo);
 		
+		// TODO:解析文件名是否符合规范
 		
+		// 复制文件
+		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
+		String destDirString = preferences.get("niubizi.home.dir", null);
 		
+		// 先判断同名的文件是否已存在，如果存在则提示用户修改文件名，不能重名。
+		
+		try {
+			File destFile = new File(new File(destDirString, NBZ.DIR_MANAGED), new File(filePath).getName());
+			if(destFile.exists()){
+				System.out.println("同名文件已存在");
+				String uuid = UUID.randomUUID().toString();
+				File unTrackedDir = new File(destDirString, NBZ.DIR_UNTRACKED);
+				FileUtils.copyFile(new File(filePath), new File(unTrackedDir, uuid));
+				
+				fileInfo.setUntrackFileName(uuid);
+				fileInfo.setFileManageStatus(NBZ.FILE_UNTRACKED);
+			}else{
+				// 将文件移到受管的文件夹下
+				File managedDir = new File(destDirString, NBZ.DIR_MANAGED);
+				FileUtils.copyFileToDirectory(new File(filePath), managedDir);
+				fileInfo.setFileManageStatus(NBZ.FILE_MANAGED);
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		fileId = fileService.add(fileInfo);
 	}
 }

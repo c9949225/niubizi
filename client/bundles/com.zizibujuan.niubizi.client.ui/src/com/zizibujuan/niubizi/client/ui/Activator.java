@@ -2,12 +2,10 @@ package com.zizibujuan.niubizi.client.ui;
 
 import java.io.File;
 
-import org.osgi.service.prefs.Preferences;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.prefs.PreferencesService;
+import org.osgi.service.prefs.Preferences;
 
 public class Activator implements BundleActivator {
 
@@ -27,16 +25,20 @@ public class Activator implements BundleActivator {
 		// TODO:插入系统默认的标签
 		
 		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
-		String homeDir = preferences.get("niubizi.home.dir", null);
-		if(homeDir == null){
-			homeDir = System.getProperty("user.home") + System.getProperty("file.separator") + ".niubizi";
-			preferences.put("niubizi.home.dir", homeDir);
+		String homeDirString = preferences.get("niubizi.home.dir", null);
+		if(homeDirString == null){
+			homeDirString = System.getProperty("user.home") + System.getProperty("file.separator") + ".niubizi";
+			preferences.put("niubizi.home.dir", homeDirString);
 			preferences.flush();
 		}
 		
 		// 判断文件夹是否已存在,若不存在则创建
-		if(!new File(homeDir).exists()){
-			new File(homeDir).mkdirs();
+		if(!new File(homeDirString).exists()){
+			File homeDir = new File(homeDirString);
+			homeDir.mkdirs();
+			// 创建子文件夹
+			new File(homeDir, NBZ.DIR_MANAGED).mkdir();
+			new File(homeDir, NBZ.DIR_UNTRACKED).mkdir();
 		}
 	}
 
