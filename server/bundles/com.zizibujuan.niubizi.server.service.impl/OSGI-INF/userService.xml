@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="com.zizibujuan.niubizi.server.service.impl.categoryServiceImpl">
+   <implementation class="com.zizibujuan.niubizi.server.service.impl.CategoryServiceImpl"/>
+   <reference 
+   		bind="setCategoryDao" 
+   		unbind="unsetCategoryDao" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.niubizi.server.dao.CategoryDao" 
+   		name="categoryDao" 
+   		policy="dynamic"/>
+	<service>
+		<provide interface="com.zizibujuan.niubizi.server.service.CategoryService"/>
+	</service>
+</scr:component>

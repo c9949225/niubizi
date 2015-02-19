@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-import com.zizibujuan.niubizi.client.ui.events.TagChangedListener;
+import com.zizibujuan.niubizi.client.ui.events.ItemChangedListener;
 import com.zizibujuan.niubizi.server.model.TagInfo;
 import com.zizibujuan.niubizi.server.service.TagService;
 
@@ -172,7 +172,7 @@ public class TagsSettingWindow {
 				tagInfo.setCreateTime(new Date()); // TODO:如何设置默认值
 				tagService.add(tagInfo);
 				if(tagChangedListener != null){
-					tagChangedListener.tagChanged();
+					tagChangedListener.itemChanged();
 				}
 				
 				// TODO： 改成刷新标签列表
@@ -195,7 +195,7 @@ public class TagsSettingWindow {
 			int id = (int) source.getData("tagId");
 			tagService.remove(id);
 			if(tagChangedListener != null){
-				tagChangedListener.tagChanged();
+				tagChangedListener.itemChanged();
 			}
 			refreshTagList(cpTable);
 			cpTable.pack();
@@ -208,8 +208,8 @@ public class TagsSettingWindow {
 		}
 	}
 
-	private TagChangedListener tagChangedListener;
-	public void addTagChangedListener(TagChangedListener changedListener) {
+	private ItemChangedListener tagChangedListener;
+	public void addTagChangedListener(ItemChangedListener changedListener) {
 		this.tagChangedListener = changedListener;
 	}
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+	name="com.zizibujuan.niubizi.server.dao.jpa.categoryDaoImpl">
+   <implementation class="com.zizibujuan.niubizi.server.dao.jpa.CategoryDaoImpl"/>
+
+   <service>
+      <provide interface="com.zizibujuan.niubizi.server.dao.CategoryDao"/>
+   </service>
+</scr:component>

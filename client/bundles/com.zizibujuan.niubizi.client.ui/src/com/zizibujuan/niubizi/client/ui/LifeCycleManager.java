@@ -73,6 +73,22 @@ public class LifeCycleManager {
 			}
 			return polygon;
 		}
+		
+	    int[] createCircle(int radius, int xOffset, int yOffset) {
+	    	       int[] circlePoints = new int[10 * radius];
+	    	 	          for (int loopIndex = 0; loopIndex < 2 * radius + 1; loopIndex++) {
+	    	           int xCurrent = loopIndex - radius;
+	    	           int yCurrent = (int) Math.sqrt(radius * radius - xCurrent * xCurrent);
+	    	           int doubleLoopIndex = 2 * loopIndex;
+	    	           
+	    	           circlePoints[doubleLoopIndex] = xCurrent + xOffset;
+	    	           circlePoints[doubleLoopIndex + 1] = yCurrent + yOffset;
+	    	           circlePoints[10 * radius - doubleLoopIndex - 2] = xCurrent + xOffset;
+	    	           circlePoints[10 * radius - doubleLoopIndex - 1] = -yCurrent + yOffset;
+	    	       }
+	    	       
+	    	       return circlePoints;
+	    	   }
 				
 		@Override
 		public void handleEvent(Event event) {
@@ -93,7 +109,7 @@ public class LifeCycleManager {
 			shell.setBackgroundImage(imgBack);
 			
 			region = new Region();
-			region.add(circle(35, 40, 40));
+			region.add(createCircle(35, 40, 40));
 			
 			shell.setRegion(region);
 			shell.setCursor(new Cursor(display, SWT.CURSOR_HAND));
@@ -112,45 +128,8 @@ public class LifeCycleManager {
 			}
 			
 			
-			
-			//ReceiverPart w = new ReceiverPart();
-			
-			
-//			// 窗口始终在最前面，即一直对用户可见
-//			final long hWnd = shell.handle;
-//			OS.SetWindowPos(hWnd, OS.HWND_TOPMOST, 0, 200, 100, 100, SWT.NULL);
-//			// 在任务栏不显示
-//			//OS.SetWindowLong(hWnd, OS.GWL_EXSTYLE, OS.WS_EX_CAPTIONOKBTN);
-//			Display display = shell.getDisplay();
-//			Tray tray = display.getSystemTray();
-//			if(tray == null){
-//				System.out.println("当前操作系统不支持系统托盘");
-//			}else{
-//				TrayItem trayItem = new TrayItem(tray, SWT.NONE);
-//				trayItem.setImage(display.getSystemImage(SWT.ICON_INFORMATION));
-//				trayItem.setToolTipText("牛鼻子 · 协助管理日常工作");
-//			}
-			
-			
 		}
 		
 	}
 }
 
-/*
- * 
-			// 窗口始终在最前面，即一直对用户可见
-			final long hWnd = shell.handle;
-			OS.SetWindowPos(hWnd, OS.HWND_TOPMOST, 0, 200, 100, 100, SWT.NULL);
-			// 在任务栏不显示
-			//OS.SetWindowLong(hWnd, OS.GWL_EXSTYLE, OS.WS_EX_CAPTIONOKBTN);
-			Display display = shell.getDisplay();
-			Tray tray = display.getSystemTray();
-			if(tray == null){
-				System.out.println("当前操作系统不支持系统托盘");
-			}else{
-				TrayItem trayItem = new TrayItem(tray, SWT.NONE);
-				trayItem.setImage(display.getSystemImage(SWT.ICON_INFORMATION));
-				trayItem.setToolTipText("牛鼻子 · 协助管理日常工作");
-			}
- */

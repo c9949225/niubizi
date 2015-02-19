@@ -1,7 +1,9 @@
 package com.zizibujuan.niubizi.client.ui;
 
+import com.zizibujuan.niubizi.server.service.CategoryService;
 import com.zizibujuan.niubizi.server.service.FileService;
 import com.zizibujuan.niubizi.server.service.TagService;
+import com.zizibujuan.niubizi.server.service.UserService;
 
 public class ServiceHolder {
 	private static ServiceHolder singleton;
@@ -47,4 +49,35 @@ public class ServiceHolder {
 	public TagService getTagService() {
 		return tagService;
 	}
+	
+	private CategoryService categoryService;
+	public void unsetCategoryService(CategoryService categoryService) {
+		//logger.info("注销categoryService");
+		if (this.categoryService == categoryService) {
+			this.categoryService = null;
+		}
+	}
+	public void setCategoryService(CategoryService categoryService) {
+		//logger.info("注入categoryService");
+		this.categoryService = categoryService;
+	}
+	public CategoryService getCategoryService() {
+		return categoryService;
+	}
+	
+	private UserService userService;
+	public void unsetUserService(UserService userService) {
+		//logger.info("注销userService");
+		if (this.userService == userService) {
+			this.userService = null;
+		}
+	}
+	public void setUserService(UserService userService) {
+		//logger.info("注入userService");
+		this.userService = userService;
+	}
+	public UserService getUserService() {
+		return userService;
+	}
+	
 }

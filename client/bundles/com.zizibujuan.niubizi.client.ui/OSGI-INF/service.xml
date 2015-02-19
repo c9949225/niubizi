@@ -22,4 +22,20 @@
    		name="tagService" 
    		policy="dynamic" />
    			
+   <reference 
+   		bind="setCategoryService" 
+   		unbind="unsetCategoryService" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.niubizi.server.service.CategoryService" 
+   		name="categoryService" 
+   		policy="dynamic" />
+   		
+   <reference 
+   		bind="setUserService" 
+   		unbind="unsetUserService" 
+   		cardinality="0..1" 
+   		interface="com.zizibujuan.niubizi.server.service.UserService" 
+   		name="userService" 
+   		policy="dynamic" />		
+   			
 </scr:component>

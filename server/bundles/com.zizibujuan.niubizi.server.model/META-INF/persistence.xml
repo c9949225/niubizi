@@ -10,6 +10,8 @@
         <class>com.zizibujuan.niubizi.server.model.FileInfo</class>
         <class>com.zizibujuan.niubizi.server.model.TagInfo</class>
         <class>com.zizibujuan.niubizi.server.model.FileTag</class>
+        <class>com.zizibujuan.niubizi.server.model.CategoryInfo</class>
+        
 <!-- 
         <class>model.account.Customer</class>
         <class>model.account.Transaction</class>

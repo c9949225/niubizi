@@ -4,6 +4,7 @@ package com.zizibujuan.niubizi.client.ui;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -14,6 +15,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -22,19 +24,26 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.service.prefs.Preferences;
 
-import com.zizibujuan.niubizi.client.ui.events.TagChangedListener;
+import com.zizibujuan.niubizi.client.ui.events.ItemChangedListener;
+import com.zizibujuan.niubizi.server.model.CategoryInfo;
 import com.zizibujuan.niubizi.server.model.FileInfo;
 import com.zizibujuan.niubizi.server.model.FileTag;
 import com.zizibujuan.niubizi.server.model.TagInfo;
+import com.zizibujuan.niubizi.server.model.UserInfo;
+import com.zizibujuan.niubizi.server.service.CategoryService;
 import com.zizibujuan.niubizi.server.service.FileService;
 import com.zizibujuan.niubizi.server.service.TagService;
+import com.zizibujuan.niubizi.server.service.UserService;
 
 /**
  * 补充文件信息的窗口
@@ -101,13 +110,21 @@ public class FileImportWindow {
 	private String filePath;
 	private int fileId;
 	
+	private Label lblFileIcon;
+	private Button btnRunIcon;
+	private Label lblFileName;
+	private Link lkFileName;
+	
 	private Label lblFileType;
 	private Text txtFileName;
+	private Label lblNameExample;
 	
 	private Composite tagContainer;
 	
 	private FileService fileService = ServiceHolder.getDefault().getFileService();
 	private TagService tagService = ServiceHolder.getDefault().getTagService();
+	private CategoryService categoryService = ServiceHolder.getDefault().getCategoryService();
+	private UserService userService = ServiceHolder.getDefault().getUserService();
 	
 	public FileImportWindow(){
 		window = new Shell(SWT.CLOSE | SWT.ON_TOP);
@@ -125,24 +142,133 @@ public class FileImportWindow {
 	 */
 	private void createWindowContent(){
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
+		layout.numColumns = 2;
 		window.setLayout(layout);
+		window.setBackground(new Color(null, 200,100,100));
 		
-		// 操作图标， 设置标签
-		Button btnTags = new Button(window, SWT.PUSH);
-		ImageData imgTagsData = new ImageData(getClass().getResourceAsStream("/icons/iconfont-tags2.png"));
-		Image imgTags = new Image(window.getDisplay(), imgTagsData);
-		btnTags.setImage(imgTags);
-		btnTags.setText("设置标签");
-		btnTags.addSelectionListener(new SelectionListener() {
+//		// 操作图标， 设置标签
+//		Button btnTags = new Button(window, SWT.PUSH);
+//		ImageData imgTagsData = new ImageData(getClass().getResourceAsStream("/icons/iconfont-tags2.png"));
+//		Image imgTags = new Image(window.getDisplay(), imgTagsData);
+//		btnTags.setImage(imgTags);
+//		btnTags.setText("设置标签");
+//		btnTags.addSelectionListener(new SelectionListener() {
+//			
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+
+//			}
+//			
+//			@Override
+//			public void widgetDefaultSelected(SelectionEvent e) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
+		
+		// 文档基本信息
+		//Composite cpFileBaseInfo = new Composite(window, SWT.NULL);
+		lblFileIcon = new Label(window, SWT.NULL);
+		GridData gdFileIcon = new GridData();
+		gdFileIcon.widthHint = 32;
+		gdFileIcon.heightHint = 32;
+		lblFileIcon.setLayoutData(gdFileIcon);
+		
+		lblFileName = new Label(window, SWT.WRAP);
+		lblFileName.setBackground(window.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		GridData gdFileName = new GridData(SWT.BEGINNING, SWT.CENTER, true, false);
+		gdFileName.widthHint = 250;
+		gdFileName.heightHint = 32;
+		lblFileName.setLayoutData(gdFileName);
+		
+		// 文档分类
+		Label lblCategory = new Label(window, SWT.NULL);
+		lblCategory.setText("文档分类");
+		GridData gdCategoryLabel = new GridData();
+		lblCategory.setLayoutData(gdCategoryLabel);
+		
+		Button btnAddCategory = new Button(window, SWT.PUSH);
+		btnAddCategory.setImage(NBZUtils.getImage(window, "iconfont-xinzeng16_16.png"));
+		btnAddCategory.setText("新增分类");
+		btnAddCategory.setLayoutData(new GridData());
+		btnAddCategory.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				new CategorySettingWindow();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+		
+		Combo cbCategory = new Combo(window, SWT.READ_ONLY);
+		cbCategory.add("");
+		List<CategoryInfo> categorys = categoryService.get();
+		for(CategoryInfo c : categorys){
+			cbCategory.add(c.getName());
+		}
+		GridData gdCategory = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gdCategory.horizontalSpan = 2;
+		cbCategory.setLayoutData(gdCategory);
+		
+		// 文档名称
+		Label lblRename = new Label(window, SWT.NULL);
+		lblRename.setText("规范名称");
+		GridData gdRenameLabel = new GridData();
+		gdRenameLabel.horizontalSpan = 2;
+		lblRename.setLayoutData(gdRenameLabel);
+		
+		txtFileName = new Text(window, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+		GridData gdRename = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gdRename.horizontalSpan = 2;
+		gdRename.heightHint = 32;
+		txtFileName.setLayoutData(gdRename);
+
+		// 命名示例，与文档类型挂钩
+		lblNameExample = new Label(window, SWT.NULL);
+		GridData gdNameExample = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gdNameExample.horizontalSpan = 2;
+		lblNameExample.setLayoutData(gdNameExample);
+		
+		// 发送人标签
+		Label lblSender = new Label(window, SWT.NULL);
+		lblSender.setText("发送人");
+		GridData gdSenderLabel = new GridData();
+		gdSenderLabel.horizontalSpan = 2;
+		lblSender.setLayoutData(gdSenderLabel);
+		
+		// 常选中的人放在上面
+		Combo cbSender = new Combo(window, SWT.READ_ONLY);
+		cbSender.add("");
+		List<UserInfo> senders = userService.getUsersOrderByDisplayName(); // TODO:与机构挂钩，给机构一个简写，显示名为"西南-张三"
+		for(UserInfo c : senders){
+			cbSender.add(c.getDisplayName());
+		}
+		GridData gdSender = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gdSender.horizontalSpan = 2;
+		cbSender.setLayoutData(gdSender);
+		
+		// 显示关键字
+		Label lblKeywords = new Label(window, SWT.NULL);
+		lblKeywords.setText("关键字");
+		GridData gdlblKeywordsLabel = new GridData();
+		lblKeywords.setLayoutData(gdlblKeywordsLabel);
+		
+		Button btnAddKeywords = new Button(window, SWT.PUSH);
+		btnAddKeywords.setImage(NBZUtils.getImage(window, "iconfont-xinzeng16_16.png"));
+		btnAddKeywords.setText("新增关键字");
+		btnAddKeywords.setLayoutData(new GridData());
+		btnAddKeywords.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO： 单例对象？
 				TagsSettingWindow settingWindow = new TagsSettingWindow();
 				// 同步标签
-				settingWindow.addTagChangedListener(new TagChangedListener() {
+				settingWindow.addTagChangedListener(new ItemChangedListener() {
 					@Override
-					public void tagChanged() {
+					public void itemChanged() {
 						if(tagContainer != null){
 							refreshTagList(tagContainer);
 						}
@@ -152,28 +278,41 @@ public class FileImportWindow {
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		
-		
-		// 文档后缀名
-		GridData gdFileType = new GridData(GridData.FILL_HORIZONTAL);
-		lblFileType = new Label(window, SWT.NULL);
-		lblFileType.setLayoutData(gdFileType);
-		// 文档名称
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		txtFileName = new Text(window, SWT.BORDER);
-		txtFileName.setLayoutData(gd);
-		
-		// 显示tag标签
 		tagContainer = new Composite(window, SWT.FILL);
 		RowLayout rwTagContainer = new RowLayout(SWT.VERTICAL);
 		tagContainer.setLayout(rwTagContainer);
+		GridData gdlblKeyWords = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gdlblKeyWords.horizontalSpan = 2;
+		tagContainer.setLayoutData(gdlblKeyWords);
 		
 		refreshTagList(tagContainer);
+//		
+//		//btnRunIcon.setLayoutData(new RowData());
+//		//btnRunIcon.setImage(getImage("iconfont-iconrun16_16.png"));
+//		RowLayout rlFileBaseInfo = new RowLayout();
+//		
+//		rlFileBaseInfo.center = true;
+//		cpFileBaseInfo.setLayout(rlFileBaseInfo);
+//		
+//		
+
+
+//		
+//		
+//
+//		
+//		
+
+//		
+//		
+//		
+
 	}
+	
+
 
 	private void refreshTagList(Composite container) {
 		Control[] children = container.getChildren();
@@ -223,50 +362,73 @@ public class FileImportWindow {
 			return;
 		}
 		filePath = filePathArray[0];
-		//String fileType = FilenameUtils.getExtension(filePath);
-		lblFileType.setText(FilenameUtils.getName(filePath));
+		String fileType = FilenameUtils.getExtension(filePath);
 		String fileName = FilenameUtils.getBaseName(filePath);
+		lblFileIcon.setImage(getFileIcon(fileType));
+		lblFileName.setText(fileName);
+		
+
 		txtFileName.setText(fileName);
-		txtFileName.setSelection(fileName.length(), fileName.length());
-		
-		// 存储文件路径，文件名，保存时间
-		
-		// 怎么判断文件已存在？先通过文件路径判断
-		// 如果文件已存在，则加载出已存在文件的信息
-		// 如果文件没有存在，则新增文件
-		FileInfo fileInfo = new FileInfo();
-		fileInfo.setFilePath(filePath);
-		fileInfo.setFileName(fileName);
-		fileInfo.setCreateTime(new Date());
-		
-		// TODO:解析文件名是否符合规范
-		
-		// 复制文件
-		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
-		String destDirString = preferences.get("niubizi.home.dir", null);
-		
-		// 先判断同名的文件是否已存在，如果存在则提示用户修改文件名，不能重名。
-		
-		try {
-			File destFile = new File(new File(destDirString, NBZ.DIR_MANAGED), new File(filePath).getName());
-			if(destFile.exists()){
-				System.out.println("同名文件已存在");
-				String uuid = UUID.randomUUID().toString();
-				File unTrackedDir = new File(destDirString, NBZ.DIR_UNTRACKED);
-				FileUtils.copyFile(new File(filePath), new File(unTrackedDir, uuid));
-				
-				fileInfo.setUntrackFileName(uuid);
-				fileInfo.setFileManageStatus(NBZ.FILE_UNTRACKED);
-			}else{
-				// 将文件移到受管的文件夹下
-				File managedDir = new File(destDirString, NBZ.DIR_MANAGED);
-				FileUtils.copyFileToDirectory(new File(filePath), managedDir);
-				fileInfo.setFileManageStatus(NBZ.FILE_MANAGED);
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+		//txtFileName.setSelection(fileName.length(), fileName.length());
+		lblNameExample.setText("xxxx-xx-xxx");
+//		
+//		
+//		
+//		// 存储文件路径，文件名，保存时间
+//		
+//		// 怎么判断文件已存在？先通过文件路径判断
+//		// 如果文件已存在，则加载出已存在文件的信息
+//		// 如果文件没有存在，则新增文件
+//		FileInfo fileInfo = new FileInfo();
+//		fileInfo.setFilePath(filePath);
+//		fileInfo.setFileName(fileName);
+//		fileInfo.setCreateTime(new Date());
+//		
+//		// TODO:解析文件名是否符合规范
+//		
+//		// 复制文件
+//		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
+//		String destDirString = preferences.get("niubizi.home.dir", null);
+//		
+//		// 先判断同名的文件是否已存在，如果存在则提示用户修改文件名，不能重名。
+//		
+//		try {
+//			File destFile = new File(new File(destDirString, NBZ.DIR_MANAGED), new File(filePath).getName());
+//			if(destFile.exists()){
+//				String uuid = UUID.randomUUID().toString();
+//				File unTrackedDir = new File(destDirString, NBZ.DIR_UNTRACKED);
+//				FileUtils.copyFile(new File(filePath), new File(unTrackedDir, uuid));
+//				
+//				fileInfo.setUntrackFileName(uuid);
+//				fileInfo.setFileManageStatus(NBZ.FILE_UNTRACKED);
+//			}else{
+//				// 将文件移到受管的文件夹下
+//				File managedDir = new File(destDirString, NBZ.DIR_MANAGED);
+//				FileUtils.copyFileToDirectory(new File(filePath), managedDir);
+//				fileInfo.setFileManageStatus(NBZ.FILE_MANAGED);
+//			}
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		fileId = fileService.add(fileInfo);
+	}
+	
+	private Image getFileIcon(String fileType){
+		String iconName = "iconfont-file.png";
+		if(fileType.equalsIgnoreCase("doc") || fileType.equalsIgnoreCase("docx")){
+			iconName = "iconfont-word.png";
+		}else if(fileType.equalsIgnoreCase("xls") || fileType.equalsIgnoreCase("xlsx")){
+			iconName = "iconfont-fileexcel.png";
+		}else if(fileType.equalsIgnoreCase("pdf")){
+			iconName = "iconfont-filepdf.png";
+		}else if(fileType.equalsIgnoreCase("ppt") || fileType.equalsIgnoreCase("pptx")){
+			iconName = "iconfont-ppt.png";
+		}else if(fileType.equalsIgnoreCase("txt")){
+			iconName = "iconfont-txt.png";
 		}
-		fileId = fileService.add(fileInfo);
+		
+		ImageData imageData = new ImageData(getClass().getResourceAsStream("/icons/" + iconName));
+		return new Image(window.getDisplay(), imageData);
 	}
 }
