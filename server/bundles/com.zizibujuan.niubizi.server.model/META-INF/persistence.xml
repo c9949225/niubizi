@@ -11,6 +11,7 @@
         <class>com.zizibujuan.niubizi.server.model.TagInfo</class>
         <class>com.zizibujuan.niubizi.server.model.FileTag</class>
         <class>com.zizibujuan.niubizi.server.model.CategoryInfo</class>
+        <class>com.zizibujuan.niubizi.server.model.FileOpenLog</class>
         
 <!-- 
         <class>model.account.Customer</class>

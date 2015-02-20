@@ -6,9 +6,11 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.UIEvents;
 import org.eclipse.e4.ui.workbench.lifecycle.PostContextCreate;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.widgets.Display;
@@ -94,6 +96,10 @@ public class LifeCycleManager {
 		public void handleEvent(Event event) {
 			eventBroker.unsubscribe(this);
 			Shell shell = (Shell)context.get(IServiceConstants.ACTIVE_SHELL);
+			
+			Image imgBack = NBZUtils.getImage(shell, "iconfont-tongzhi.png");
+			shell.setBackgroundImage(imgBack);
+			
 			System.out.println(shell);
 			
 			// 窗口始终在最前面，即一直对用户可见
@@ -104,26 +110,18 @@ public class LifeCycleManager {
 			
 			Display display = shell.getDisplay();
 			
-			ImageData imgBackData = new ImageData(getClass().getResourceAsStream("/icons/iconfont-tongzhi.png"));
-			Image imgBack = new Image(display, imgBackData);
-			shell.setBackgroundImage(imgBack);
-			
 			region = new Region();
 			region.add(createCircle(35, 40, 40));
 			
 			shell.setRegion(region);
 			shell.setCursor(new Cursor(display, SWT.CURSOR_HAND));
 			
-			//shell.setBackground(new Color(shell.getDisplay(), new RGB(0,187,156)));
-			
 			Tray tray = display.getSystemTray();
 			if(tray == null){
 				System.out.println("当前操作系统不支持系统托盘");
 			}else{
 				TrayItem trayItem = new TrayItem(tray, SWT.NONE);
-				ImageData imgTrayData = new ImageData(getClass().getResourceAsStream("/icons/iconfont-folder.png"));
-				Image imgTray = new Image(display, imgTrayData);
-				trayItem.setImage(imgTray);
+				trayItem.setImage(NBZUtils.getImage(display, "iconfont-folder.png"));
 				trayItem.setToolTipText("牛鼻子 · 协助管理日常工作");
 			}
 		}

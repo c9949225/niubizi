@@ -1,7 +1,11 @@
 package com.zizibujuan.niubizi.server.service;
 
+import java.util.List;
+
 import com.zizibujuan.niubizi.server.model.FileInfo;
+import com.zizibujuan.niubizi.server.model.FileOpenLog;
 import com.zizibujuan.niubizi.server.model.FileTag;
+import com.zizibujuan.niubizi.server.model.TagInfo;
 
 public interface FileService {
 	
@@ -22,4 +26,15 @@ public interface FileService {
 	void update(FileInfo fileInfo);
 
 	FileInfo findFileByName(String fileName);
+
+	List<FileInfo> get();
+
+	List<TagInfo> getTags(int fileId);
+
+	/**
+	 * 记录文件打开的时间
+	 * 
+	 * @param fileOpenLog 文件访问信息
+	 */
+	void logOpenFile(FileOpenLog fileOpenLog);
 }

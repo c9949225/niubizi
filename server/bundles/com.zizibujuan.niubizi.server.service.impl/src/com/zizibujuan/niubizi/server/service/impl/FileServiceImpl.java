@@ -1,8 +1,12 @@
 package com.zizibujuan.niubizi.server.service.impl;
 
+import java.util.List;
+
 import com.zizibujuan.niubizi.server.dao.FileDao;
 import com.zizibujuan.niubizi.server.model.FileInfo;
+import com.zizibujuan.niubizi.server.model.FileOpenLog;
 import com.zizibujuan.niubizi.server.model.FileTag;
+import com.zizibujuan.niubizi.server.model.TagInfo;
 import com.zizibujuan.niubizi.server.service.FileService;
 
 public class FileServiceImpl implements FileService{
@@ -44,6 +48,22 @@ public class FileServiceImpl implements FileService{
 	@Override
 	public FileInfo findFileByName(String fileName) {
 		return fileDao.findFileByName(fileName);
+	}
+
+	@Override
+	public List<FileInfo> get() {
+		return fileDao.get();
+	}
+
+	@Override
+	public List<TagInfo> getTags(int fileId) {
+		return fileDao.getTags(fileId);
+	}
+
+	@Override
+	public void logOpenFile(FileOpenLog fileOpenLog) {
+		fileDao.logOpenFile(fileOpenLog);
+		
 	}
 
 }

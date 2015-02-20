@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -36,7 +35,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.osgi.service.prefs.Preferences;
 
 import com.zizibujuan.niubizi.client.ui.events.ItemChangedListener;
 import com.zizibujuan.niubizi.server.model.CategoryInfo;
@@ -74,7 +72,7 @@ public class FileImportWindow {
 			Label lblRemove = (Label)children[2];
 			
 			FileTag ft = new FileTag();
-			ft.setFileId(fileId);
+			ft.setFileId(fileInfo.getId());
 			TagInfo tag = (TagInfo) c.getData("tagInfo");
 			ft.setTagId(tag.getId());
 			
@@ -112,7 +110,6 @@ public class FileImportWindow {
 	
 	// 文件完整路径
 	private String filePath;
-	private int fileId;
 	
 	// 控件
 	private Label lblFileIcon;
@@ -156,7 +153,7 @@ public class FileImportWindow {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		window.setLayout(layout);
-		window.setBackground(new Color(null, 200,100,100));
+		// window.setBackground(new Color(null, 200,100,100));
 		
 		// 文档基本信息
 		//Composite cpFileBaseInfo = new Composite(window, SWT.NULL);
@@ -355,7 +352,7 @@ public class FileImportWindow {
 		filePath = filePathArray[0];
 		String fileType = FilenameUtils.getExtension(filePath);
 		String fileName = FilenameUtils.getBaseName(filePath);
-		lblFileIcon.setImage(getFileIcon(fileType));
+		lblFileIcon.setImage(NBZUtils.getFileIcon(fileType));
 		lblFileName.setText(fileName);
 		
 
@@ -377,7 +374,7 @@ public class FileImportWindow {
 		// TODO:解析文件名是否符合规范
 		
 		// 复制文件
-		File managedDir = getManagedDir();
+		File managedDir = NBZUtils.getManagedDir();
 		// 先判断同名的文件是否已存在，如果存在则提示用户修改文件名，不能重名。
 		try {
 			
@@ -399,11 +396,9 @@ public class FileImportWindow {
 				fileInfo.setFileManageStatus(NBZ.FILE_MANAGED);
 				fileService.add(fileInfo);
 			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		
 		// 文本发生变化的监听事件放在第一次保存文件之后
 		cbCategory.addModifyListener(new ModifyListener() {
@@ -451,7 +446,7 @@ public class FileImportWindow {
 					fileInfo.setFileName(newData);
 					
 					// TODO: 需要处理旧文件名相同，是因为文件同名的，并不是同一个文件的逻辑。
-					File managedDir = getManagedDir();
+					File managedDir = NBZUtils.getManagedDir();
 					if(fileInfo.getId() == 0){
 						// 没有id，说明还没有托管
 						try {
@@ -529,27 +524,7 @@ public class FileImportWindow {
 		});
 	}
 
-	private File getManagedDir() {
-		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
-		String destDirString = preferences.get("niubizi.home.dir", null);
-		return new File(destDirString, NBZ.DIR_MANAGED);
-	}
+
 	
-	private Image getFileIcon(String fileType){
-		String iconName = "iconfont-file.png";
-		if(fileType.equalsIgnoreCase("doc") || fileType.equalsIgnoreCase("docx")){
-			iconName = "iconfont-word.png";
-		}else if(fileType.equalsIgnoreCase("xls") || fileType.equalsIgnoreCase("xlsx")){
-			iconName = "iconfont-fileexcel.png";
-		}else if(fileType.equalsIgnoreCase("pdf")){
-			iconName = "iconfont-filepdf.png";
-		}else if(fileType.equalsIgnoreCase("ppt") || fileType.equalsIgnoreCase("pptx")){
-			iconName = "iconfont-ppt.png";
-		}else if(fileType.equalsIgnoreCase("txt")){
-			iconName = "iconfont-txt.png";
-		}
-		
-		ImageData imageData = new ImageData(getClass().getResourceAsStream("/icons/" + iconName));
-		return new Image(window.getDisplay(), imageData);
-	}
+	
 }

@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import com.zizibujuan.niubizi.server.dao.FileDao;
 import com.zizibujuan.niubizi.server.model.EntityManagerFactoryService;
 import com.zizibujuan.niubizi.server.model.FileInfo;
+import com.zizibujuan.niubizi.server.model.FileOpenLog;
 import com.zizibujuan.niubizi.server.model.FileTag;
 import com.zizibujuan.niubizi.server.model.TagInfo;
 
@@ -69,6 +70,31 @@ public class FileDaoImpl implements FileDao{
 		EntityManager entityManager = EntityManagerFactoryService.getEntityManager();
 		List<FileInfo> result = entityManager.createQuery("select t from FileInfo t where t.fileName=:fileName", FileInfo.class).setParameter("fileName", fileName).getResultList();
 		return result.isEmpty() ? null : result.get(0);
+	}
+
+	@Override
+	public List<FileInfo> get() {
+		EntityManager entityManager = EntityManagerFactoryService.getEntityManager();
+		return entityManager.createQuery("select t from FileInfo t order by t.id desc", FileInfo.class).getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TagInfo> getTags(int fileId) {
+		EntityManager entityManager = EntityManagerFactoryService.getEntityManager();
+		return entityManager
+			.createNativeQuery("select b.DBID, b.TAG_NAME from NBZ_FILE_TAG a,NBZ_TAG b where a.TAG_ID = b.DBID and a.FILE_ID=?", TagInfo.class)
+			.setParameter(1, fileId).getResultList();
+		
+	}
+
+	@Override
+	public void logOpenFile(FileOpenLog fileOpenLog) {
+		EntityManager entityManager = EntityManagerFactoryService.getEntityManager();
+		entityManager.getTransaction().begin();
+		entityManager.persist(fileOpenLog);
+		entityManager.getTransaction().commit();
+		entityManager.close();
 	}
 
 }
