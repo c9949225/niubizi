@@ -1,5 +1,7 @@
 package com.zizibujuan.niubizi.server.dao.jpa;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import com.zizibujuan.niubizi.server.dao.FileDao;
@@ -60,6 +62,13 @@ public class FileDaoImpl implements FileDao{
 		entityManager.merge(fileInfo);
 		entityManager.getTransaction().commit();
 		entityManager.close();
+	}
+
+	@Override
+	public FileInfo findFileByName(String fileName) {
+		EntityManager entityManager = EntityManagerFactoryService.getEntityManager();
+		List<FileInfo> result = entityManager.createQuery("select t from FileInfo t where t.fileName=:fileName", FileInfo.class).setParameter("fileName", fileName).getResultList();
+		return result.isEmpty() ? null : result.get(0);
 	}
 
 }

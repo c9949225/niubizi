@@ -20,4 +20,6 @@ public interface FileService {
 	void addTag(FileTag ft);
 
 	void update(FileInfo fileInfo);
+
+	FileInfo findFileByName(String fileName);
 }

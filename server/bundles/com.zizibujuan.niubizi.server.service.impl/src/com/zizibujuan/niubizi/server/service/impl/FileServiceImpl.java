@@ -41,4 +41,9 @@ public class FileServiceImpl implements FileService{
 		fileDao.update(fileInfo);
 	}
 
+	@Override
+	public FileInfo findFileByName(String fileName) {
+		return fileDao.findFileByName(fileName);
+	}
+
 }

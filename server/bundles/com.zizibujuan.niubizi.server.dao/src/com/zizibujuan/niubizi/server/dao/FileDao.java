@@ -20,4 +20,6 @@ public interface FileDao {
 	void addTag(FileTag fileTag);
 
 	void update(FileInfo fileInfo);
+
+	FileInfo findFileByName(String fileName);
 }

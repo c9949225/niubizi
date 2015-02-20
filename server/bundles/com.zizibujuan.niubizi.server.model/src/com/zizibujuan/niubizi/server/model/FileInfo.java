@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 /**
  * 文件信息
@@ -18,7 +19,7 @@ import javax.persistence.TemporalType;
  * @since 0.0.1
  */
 @Entity
-@Table(name="NBZ_FILE")
+@Table(name="NBZ_FILE", uniqueConstraints=@UniqueConstraint(name="UN_FILE_NAME", columnNames={"FILE_NAME"}))
 public class FileInfo {
 
 	@Id 
@@ -28,6 +29,9 @@ public class FileInfo {
 	
 	@Column(name="FILE_NAME", length=152)
 	private String fileName;
+	
+	@Column(name="FILE_TYPE", length=10)
+	private String fileType; // 文件类型，存储文件的后缀名。
 	
 	@Column(name="FILE_PATH", length=3000)
 	private String filePath;
@@ -56,6 +60,14 @@ public class FileInfo {
 		this.id = id;
 	}
 	
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
 	public String getFileName() {
 		return fileName;
 	}

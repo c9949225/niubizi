@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -34,6 +33,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.service.prefs.Preferences;
@@ -135,6 +135,7 @@ public class FileImportWindow {
 	private FileInfo fileInfo; // 这个模块主要维护这个model对象
 	private List<UserInfo> senders;
 	private List<CategoryInfo> categories;
+	private boolean fileNameIsUsed = false;
 	
 	
 	public FileImportWindow(){
@@ -370,35 +371,39 @@ public class FileImportWindow {
 		fileInfo = new FileInfo();
 		fileInfo.setFilePath(filePath);
 		fileInfo.setFileName(fileName);
+		fileInfo.setFileType(fileType);
 		fileInfo.setCreateTime(new Date());
 		
 		// TODO:解析文件名是否符合规范
 		
 		// 复制文件
-		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
-		String destDirString = preferences.get("niubizi.home.dir", null);
-		
+		File managedDir = getManagedDir();
 		// 先判断同名的文件是否已存在，如果存在则提示用户修改文件名，不能重名。
 		try {
-			File destFile = new File(new File(destDirString, NBZ.DIR_MANAGED), new File(filePath).getName());
+			
+			File destFile = new File(managedDir, new File(filePath).getName());
 			if(destFile.exists()){
-				String uuid = UUID.randomUUID().toString();
-				File unTrackedDir = new File(destDirString, NBZ.DIR_UNTRACKED);
-				FileUtils.copyFile(new File(filePath), new File(unTrackedDir, uuid));
+				// 临时注释，第一版不处理文件重命名的问题，需要用户在程序外处理，这里只给出提示。
+				// 可以做这样一个变通，将移动文件放在重命名文件后
+//				String uuid = UUID.randomUUID().toString();
+//				File unTrackedDir = new File(destDirString, NBZ.DIR_UNTRACKED);
+//				FileUtils.copyFile(new File(filePath), new File(unTrackedDir, uuid));
+//				
+//				fileInfo.setUntrackFileName(uuid);
+//				fileInfo.setFileManageStatus(NBZ.FILE_UNTRACKED);
 				
-				fileInfo.setUntrackFileName(uuid);
-				fileInfo.setFileManageStatus(NBZ.FILE_UNTRACKED);
+				// 如果有同名文件存在，则不往数据库中保存数据，当文件名不重复的时候就自动保存，这是一种延迟保存的处理策略。
 			}else{
 				// 将文件移到受管的文件夹下
-				File managedDir = new File(destDirString, NBZ.DIR_MANAGED);
 				FileUtils.copyFileToDirectory(new File(filePath), managedDir);
 				fileInfo.setFileManageStatus(NBZ.FILE_MANAGED);
+				fileService.add(fileInfo);
 			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		fileService.add(fileInfo);
+		
 		
 		// 文本发生变化的监听事件放在第一次保存文件之后
 		cbCategory.addModifyListener(new ModifyListener() {
@@ -429,20 +434,66 @@ public class FileImportWindow {
 			
 			@Override
 			public void focusGained(FocusEvent e) {
-				txtFileName.setData("oldData", txtFileName.getText());
+				txtFileName.setData("oldData", txtFileName.getText().trim());
 			}
 			
 			@Override
 			public void focusLost(FocusEvent e) {
-				String newData = txtFileName.getText();
+				if(fileNameIsUsed) 
+					return;
+				
+				String newData = txtFileName.getText().trim();
 				String oldData = (String) txtFileName.getData("oldData");
 				if(!oldData.equals(newData)){
+					// TODO: 
+					// 1. 校验文件名是否已存在
+					// 2. 修改文件的名称
 					fileInfo.setFileName(newData);
-					// TODO: 修改文件的名称
-					onDataChanged();
+					
+					// TODO: 需要处理旧文件名相同，是因为文件同名的，并不是同一个文件的逻辑。
+					File managedDir = getManagedDir();
+					if(fileInfo.getId() == 0){
+						// 没有id，说明还没有托管
+						try {
+							new File(managedDir, newData+"."+fileInfo.getFileType()).createNewFile();
+							fileService.add(fileInfo);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						
+					}else{
+						
+						File oldFile = new File(managedDir, oldData+"."+fileInfo.getFileType());
+						oldFile.renameTo(new File(managedDir, newData+"."+fileInfo.getFileType()));
+						onDataChanged();
+					}
+					
 				}
 			}
 			
+		});
+		
+		// 判断文件名是否重复
+		txtFileName.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				if(fileNameIsUsed) 
+					return;
+				String newData = txtFileName.getText().trim();
+				FileInfo f = fileService.findFileByName(newData);
+				if(f != null && f.getId()!=f.getId()/*排除本文件*/){
+					fileNameIsUsed = true;
+					txtFileName.setBackground(window.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+					MessageBox m = new MessageBox(window);
+					m.setMessage("文件名已被使用");
+					m.open();
+				}else{
+					txtFileName.setBackground(null);
+					fileNameIsUsed = false;
+				}
+				
+			}
 		});
 		
 		// focusout有个问题，就是在关闭窗口时不触发，所以再监听一次销毁事件
@@ -452,7 +503,7 @@ public class FileImportWindow {
 			public void widgetDisposed(DisposeEvent e) {
 				String newData = txtFileName.getText();
 				String oldData = (String) txtFileName.getData("oldData");
-				if(!oldData.equals(newData)){
+				if(oldData != null && !oldData.equals(newData)){
 					fileInfo.setFileName(newData);
 					// TODO: 修改文件的名称
 					onDataChanged();
@@ -476,6 +527,12 @@ public class FileImportWindow {
 				onDataChanged();
 			}
 		});
+	}
+
+	private File getManagedDir() {
+		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
+		String destDirString = preferences.get("niubizi.home.dir", null);
+		return new File(destDirString, NBZ.DIR_MANAGED);
 	}
 	
 	private Image getFileIcon(String fileType){
