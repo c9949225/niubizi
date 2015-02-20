@@ -1,15 +1,11 @@
 package com.zizibujuan.niubizi.client.ui;
 
 
-import java.awt.Toolkit;
-import java.io.InputStream;
 import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
 
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
@@ -17,48 +13,24 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 public class ReceiverPart {
 	
-	private Shell shell;
-	
 	private FileImportWindow childWindow;
-	
-	
-//	public ReceiverPart(){
-//		
-//		shell = new Shell(SWT.NO_TRIM);
-//		shell.setSize(100, 100);
-//		shell.setLocation(0, 300);
-//		
-//		createControls(shell);
-//		shell.open();
-//	}
 
 	@PostConstruct
 	public void createControls(Composite parent){
 		System.out.println("创建控件");
 		System.out.println(parent);
 		
-		
-		
 		Display display = parent.getDisplay();
-		
-		
 		// 为了让label垂直居中显示
 		Composite labelCell = new Composite(parent, SWT.BORDER);
 		GridData gridData = new GridData();

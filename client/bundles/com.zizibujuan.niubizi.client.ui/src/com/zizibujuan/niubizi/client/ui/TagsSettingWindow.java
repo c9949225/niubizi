@@ -209,7 +209,7 @@ public class TagsSettingWindow {
 	}
 
 	private ItemChangedListener tagChangedListener;
-	public void addTagChangedListener(ItemChangedListener changedListener) {
+	public void addItemChangedListener(ItemChangedListener changedListener) {
 		this.tagChangedListener = changedListener;
 	}
 }

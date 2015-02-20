@@ -42,7 +42,12 @@ public class FileInfo {
 	@Column(name="FILE_MANAGE_STATUS", length=1)
 	private String fileManageStatus;
 	
-
+	@Column(name="FILE_CATEGORY")
+	private int category; // 文档分类，一个文档只属于一个分类
+	
+	@Column(name="FILE_SENDER")
+	private int sender; // 文件发送人
+	
 	public int getId() {
 		return id;
 	}
@@ -90,5 +95,20 @@ public class FileInfo {
 	public void setFileManageStatus(String fileManageStatus) {
 		this.fileManageStatus = fileManageStatus;
 	}
-	
+
+	public int getCategory() {
+		return category;
+	}
+
+	public void setCategory(int category) {
+		this.category = category;
+	}
+
+	public int getSender() {
+		return sender;
+	}
+
+	public void setSender(int sender) {
+		this.sender = sender;
+	}
 }

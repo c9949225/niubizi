@@ -36,6 +36,9 @@ public class CategoryInfo {
 	
 	@Column(name="SEQ")
 	private int seq = 0;
+	
+	@Column(name="FILE_NAME_TEMPLATE", length = 152)
+	private String fileNameTemplate; // 文件名标准命名方式
 
 	public int getId() {
 		return id;
@@ -68,4 +71,13 @@ public class CategoryInfo {
 	public void setSeq(int seq) {
 		this.seq = seq;
 	}
+
+	public String getFileNameTemplate() {
+		return fileNameTemplate;
+	}
+
+	public void setFileNameTemplate(String fileNameTemplate) {
+		this.fileNameTemplate = fileNameTemplate;
+	}
+	
 }

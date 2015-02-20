@@ -36,4 +36,9 @@ public class FileServiceImpl implements FileService{
 		fileDao.addTag(fileTag);
 	}
 
+	@Override
+	public void update(FileInfo fileInfo) {
+		fileDao.update(fileInfo);
+	}
+
 }

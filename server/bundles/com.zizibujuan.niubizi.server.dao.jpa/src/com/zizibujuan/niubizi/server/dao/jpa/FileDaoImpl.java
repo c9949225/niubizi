@@ -53,5 +53,13 @@ public class FileDaoImpl implements FileDao{
 		entityManager.close();
 	}
 
+	@Override
+	public void update(FileInfo fileInfo) {
+		EntityManager entityManager = EntityManagerFactoryService.getEntityManager();
+		entityManager.getTransaction().begin();
+		entityManager.merge(fileInfo);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+	}
 
 }

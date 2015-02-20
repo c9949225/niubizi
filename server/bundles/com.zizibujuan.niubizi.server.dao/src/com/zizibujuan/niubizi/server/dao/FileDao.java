@@ -18,4 +18,6 @@ public interface FileDao {
 	void removeTag(FileTag fileTag);
 
 	void addTag(FileTag fileTag);
+
+	void update(FileInfo fileInfo);
 }

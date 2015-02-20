@@ -18,4 +18,6 @@ public interface FileService {
 	void removeTag(FileTag ft);
 
 	void addTag(FileTag ft);
+
+	void update(FileInfo fileInfo);
 }

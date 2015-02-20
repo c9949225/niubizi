@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Text;
 
 import com.zizibujuan.niubizi.client.ui.events.ItemChangedListener;
 import com.zizibujuan.niubizi.server.model.CategoryInfo;
-import com.zizibujuan.niubizi.server.model.TagInfo;
 import com.zizibujuan.niubizi.server.service.CategoryService;
 
 public class CategorySettingWindow {
@@ -33,6 +32,7 @@ public class CategorySettingWindow {
 	private Shell shell;
 	
 	private Text txtCategoryName;
+	private Text txtFileNameTemplate;
 	
 	private Composite cpTable;
 	private Table tblCategories;
@@ -40,27 +40,39 @@ public class CategorySettingWindow {
 	private CategoryService categoryService = ServiceHolder.getDefault().getCategoryService();
 	
 	public CategorySettingWindow(){
-		shell = new Shell();
+		shell = new Shell(SWT.ON_TOP | SWT.CLOSE);
+		shell.setSize(400,500);
 		
 		GridLayout glShell = new GridLayout();
-		glShell.numColumns = 3;
+		glShell.numColumns = 2;
 		shell.setLayout(glShell);
 		
 		Label lblCategoryName = new Label(shell, SWT.NULL);
 		lblCategoryName.setText("分类名称");
 		txtCategoryName = new Text(shell, SWT.BORDER);
 		GridData gdCategoryName = new GridData();
-		gdCategoryName.widthHint = 200;
+		gdCategoryName.widthHint = 260;
 		txtCategoryName.setLayoutData(gdCategoryName);
+		
+		Label lblFileNameTemplate = new Label(shell, SWT.NULL);
+		lblFileNameTemplate.setText("文件名规范示例");
+		txtFileNameTemplate = new Text(shell, SWT.BORDER);
+		GridData gdFileNameTemplate = new GridData();
+		gdFileNameTemplate.widthHint = 260;
+		txtFileNameTemplate.setLayoutData(gdFileNameTemplate);
 		
 		Button btnSave = new Button(shell, SWT.PUSH);
 		btnSave.setImage(NBZUtils.getImage(shell, "iconfont-baocun16_16.png"));
 		btnSave.setText("保存");
 		btnSave.addSelectionListener(new SaveCategoryListener());
+		GridData gdSave = new GridData();
+		gdSave.horizontalSpan = 2;
+		gdSave.horizontalAlignment = SWT.RIGHT;
+		btnSave.setLayoutData(gdSave);
 		
 		cpTable = new Composite(shell, SWT.NONE);
 		GridData gdCategoryContainer = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gdCategoryContainer.horizontalSpan = 3;
+		gdCategoryContainer.horizontalSpan = 2;
 		cpTable.setLayoutData(gdCategoryContainer);
 		
 		cpTable.setLayout(new FillLayout());
@@ -83,22 +95,27 @@ public class CategorySettingWindow {
 		}else{
 			// 表头
 			TableColumn tcName = new TableColumn(tblCategories, SWT.CENTER);
-			tcName.setWidth(300);
+			tcName.setWidth(150);
+			
+			TableColumn tcFileNameTemplate = new TableColumn(tblCategories, SWT.CENTER);
+			tcFileNameTemplate.setWidth(150);
 			
 			TableColumn tcDocCount = new TableColumn(tblCategories, SWT.CENTER);
-			tcDocCount.setWidth(200);
+			tcDocCount.setWidth(100);
 			
 			TableColumn tcDelete = new TableColumn(tblCategories, SWT.CENTER);
-			tcDelete.setWidth(100);
+			tcDelete.setWidth(70);
 			
 			TableColumn tcEdit = new TableColumn(tblCategories, SWT.CENTER);
-			tcEdit.setWidth(100);
+			tcEdit.setWidth(70);
 			
 			for(CategoryInfo categoryInfo : definedCategories){
 				TableItem item = new TableItem(tblCategories, SWT.NULL);
+				item.setData(categoryInfo);
 				
 				item.setText(0, categoryInfo.getName());
-				item.setData(categoryInfo);
+				item.setText(1, categoryInfo.getFileNameTemplate());
+				
 				
 				// TODO: 标注的文件数加粗显示
 				//item.setText(1, "已关联 " + categoryInfo.getFileCount() + " 个文件");
@@ -158,7 +175,11 @@ public class CategorySettingWindow {
 				
 				CategoryInfo categoryInfo = new CategoryInfo();
 				categoryInfo.setName(strCategoryName);
-				categoryInfo.setCreateTime(new Date()); 
+				categoryInfo.setCreateTime(new Date());
+				String fileNameTemplate = txtFileNameTemplate.getText().trim();
+				if(StringUtils.isNotEmpty(fileNameTemplate)){
+					categoryInfo.setFileNameTemplate(fileNameTemplate);
+				}
 				categoryService.add(categoryInfo);
 				if(categoryChangedListener != null){
 					categoryChangedListener.itemChanged();
@@ -197,7 +218,7 @@ public class CategorySettingWindow {
 	}
 	
 	private ItemChangedListener categoryChangedListener;
-	public void addCategoryChangedListener(ItemChangedListener changedListener) {
+	public void addItemChangedListener(ItemChangedListener changedListener) {
 		this.categoryChangedListener = changedListener;
 	}
 }

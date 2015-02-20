@@ -21,4 +21,7 @@ public class NBZ {
 	public static String FILE_MANAGED = "1";
 	
 	public static String FILE_UNTRACKED = "2";
+	
+	public static int UNDEFINED_KEY = -1;
+	public static String UNDEFINED_VALUE = "未指派";
 }
