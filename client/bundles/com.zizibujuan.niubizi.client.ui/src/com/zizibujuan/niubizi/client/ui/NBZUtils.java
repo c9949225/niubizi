@@ -40,7 +40,7 @@ public class NBZUtils {
 	
 	public static File getManagedDir() {
 		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
-		String destDirString = preferences.get("niubizi.home.dir", null);
+		String destDirString = preferences.get(NBZ.KEY_HOME, null);
 		return new File(destDirString, NBZ.DIR_MANAGED);
 	}
 }

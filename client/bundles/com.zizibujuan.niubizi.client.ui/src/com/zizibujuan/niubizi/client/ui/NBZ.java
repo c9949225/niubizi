@@ -24,4 +24,8 @@ public class NBZ {
 	
 	public static int UNDEFINED_KEY = -1;
 	public static String UNDEFINED_VALUE = "未指派";
+	
+	
+	public static String MANAGED_FOLDER = ".niubizi_debug"; // ".niubizi";
+	public static String KEY_HOME = "niubizi.home.dir";// 
 }

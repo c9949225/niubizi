@@ -15,8 +15,19 @@
 
    <windowImages/>
 
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
    <plugins>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.zizibujuan.niubizi.client.ui"/>
       <plugin id="com.zizibujuan.niubizi.server.dao"/>
       <plugin id="com.zizibujuan.niubizi.server.dao.jpa"/>
       <plugin id="com.zizibujuan.niubizi.server.model"/>

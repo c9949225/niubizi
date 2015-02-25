@@ -25,10 +25,12 @@ public class Activator implements BundleActivator {
 		// TODO:插入系统默认的标签
 		
 		Preferences preferences = ConfigurationScope.INSTANCE.getNode("com.zizibujuan.niubizi.client.ui");
-		String homeDirString = preferences.get("niubizi.home.dir", null);
+		String homeDirString = preferences.get(NBZ.KEY_HOME, null);
 		if(homeDirString == null){
-			homeDirString = System.getProperty("user.home") + System.getProperty("file.separator") + ".niubizi";
-			preferences.put("niubizi.home.dir", homeDirString);
+			homeDirString = System.getProperty("user.home") 
+					+ System.getProperty("file.separator") 
+					+ NBZ.MANAGED_FOLDER;
+			preferences.put(NBZ.KEY_HOME, homeDirString);
 			preferences.flush();
 		}
 		
