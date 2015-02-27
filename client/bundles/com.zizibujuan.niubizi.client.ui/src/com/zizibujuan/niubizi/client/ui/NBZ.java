@@ -26,6 +26,6 @@ public class NBZ {
 	public static String UNDEFINED_VALUE = "未指派";
 	
 	
-	public static String MANAGED_FOLDER = ".niubizi_debug"; // ".niubizi";
+	public static String MANAGED_FOLDER = ".niubizi"; // ".niubizi_debug";
 	public static String KEY_HOME = "niubizi.home.dir";// 
 }

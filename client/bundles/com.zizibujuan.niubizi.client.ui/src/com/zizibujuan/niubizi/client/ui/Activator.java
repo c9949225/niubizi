@@ -35,11 +35,17 @@ public class Activator implements BundleActivator {
 		}
 		
 		// 判断文件夹是否已存在,若不存在则创建
-		if(!new File(homeDirString).exists()){
-			File homeDir = new File(homeDirString);
+		File homeDir = new File(homeDirString);
+		if(!homeDir.exists()){
 			homeDir.mkdirs();
-			// 创建子文件夹
+		}
+		
+		// 创建子文件夹
+		if(!new File(homeDir, NBZ.DIR_MANAGED).exists()){
 			new File(homeDir, NBZ.DIR_MANAGED).mkdir();
+		}
+		
+		if(!new File(homeDir, NBZ.DIR_UNTRACKED).exists()){
 			new File(homeDir, NBZ.DIR_UNTRACKED).mkdir();
 		}
 	}

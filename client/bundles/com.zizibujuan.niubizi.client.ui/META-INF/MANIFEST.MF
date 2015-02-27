@@ -20,6 +20,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.zizibujuan.niubizi.server.model,
  com.zizibujuan.niubizi.server.service,
  org.apache.commons.lang3;version="3.1.0",
+ org.apache.commons.lang3.time;version="3.1.0",
  org.eclipse.e4.ui.internal.workbench.swt,
  org.eclipse.e4.ui.workbench.renderers.swt,
  org.eclipse.e4.ui.workbench.swt.factories,

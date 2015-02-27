@@ -73,7 +73,7 @@ public class CategoryInfo {
 	}
 
 	public String getFileNameTemplate() {
-		return fileNameTemplate;
+		return fileNameTemplate == null? "" : fileNameTemplate;
 	}
 
 	public void setFileNameTemplate(String fileNameTemplate) {
