@@ -19,7 +19,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -349,15 +348,17 @@ public class FileImportWindow {
 		if(filePathArray.length == 0){
 			return;
 		}
+		// 文件类型对应的图标和文件名称
 		filePath = filePathArray[0];
 		String fileType = FilenameUtils.getExtension(filePath);
 		String fileName = FilenameUtils.getBaseName(filePath);
 		lblFileIcon.setImage(NBZUtils.getFileIcon(fileType));
 		lblFileName.setText(fileName);
 		
-
+		// 可输入新文件名
 		txtFileName.setText(fileName);
 		txtFileName.setSelection(fileName.length(), fileName.length());
+		// 名称规范
 		lblNameExample.setText("xxxx-xx-xxx");
 		
 		// 存储文件路径，文件名，保存时间

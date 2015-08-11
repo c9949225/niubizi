@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
